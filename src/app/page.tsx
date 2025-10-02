@@ -1,6 +1,8 @@
 "use client";
-
+import Link from "next/link";
 import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
+
 
 export default function Home() {
   const [projects, setProjects] = useState<any[]>([]);
@@ -22,7 +24,10 @@ export default function Home() {
     const res = await fetch(`/api/projects/${id}`, { method: "DELETE" });
     if (res.ok) {
       setProjects((prev) => prev.filter((p) => p.id !== id));
-    }
+      toast.success("Project deleted successfully!");
+    } else {
+      toast.error("Failed to delete project.");
+    }  
   };
 
   const handleEditClick = (project: any) => {
@@ -54,6 +59,15 @@ export default function Home() {
   return (
     <div className="p-8 max-w-3xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Projects</h1>
+      <div className="flex justify-between items-center mb-6">
+        <Link
+          href="/projects"
+          className="bg-green-600 text-white px-3 py-1 rounded"
+        >
+          + Add Project
+        </Link>
+      </div>
+
       <ul className="space-y-4">
         {projects.map((project) => (
           <li

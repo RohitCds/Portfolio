@@ -1,69 +1,159 @@
 "use client";
+import Link from "next/link";
+import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import toast, { Toaster } from "react-hot-toast";
 
+export default function Home() {
+  const [projects, setProjects] = useState<any[]>([]);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    techStack: "",
+    link: "",
+  });
 
-export default function NewProject() {
-  const router = useRouter();
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [techStack, setTechStack] = useState("");
-  const [link, setLink] = useState("");
-  const [message, setMessage] = useState("");
+  useEffect(() => {
+    fetch("/api/projects")
+      .then((res) => res.json())
+      .then((data) => setProjects(data));
+  }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const res = await fetch("/api/projects", {
-      method: "POST",
+  const handleDelete = async (id: number) => {
+    const res = await fetch(`/api/projects/${id}`, { method: "DELETE" });
+    if (res.ok) {
+      setProjects((prev) => prev.filter((p) => p.id !== id));
+      toast.success("Project deleted successfully!");
+    } else {
+      toast.error("Failed to delete project.");
+    }  
+  };
+
+  const handleEditClick = (project: any) => {
+    setEditingId(project.id);
+    setFormData({
+      title: project.title,
+      description: project.description,
+      techStack: project.techStack,
+      link: project.link,
+    });
+  };
+
+  const handleUpdate = async (id: number) => {
+    const res = await fetch(`/api/projects/${id}`, {
+      method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, description, techStack, link }),
+      body: JSON.stringify(formData),
     });
 
     if (res.ok) {
-      // redirect with query param
-      toast.success("Project Added!");
-      router.push("/");
-    } else {
-      const data = await res.json();
-      setMessage(data.error);
+      const updated = await res.json();
+      setProjects((prev) =>
+        prev.map((p) => (p.id === id ? updated : p))
+      );
+      setEditingId(null);
     }
   };
 
   return (
-    <div className="p-8 max-w-lg mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Add New Project</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <input
-          placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="border p-2 rounded"
-        />
-        <input
-          placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="border p-2 rounded"
-        />
-        <input
-          placeholder="Tech Stack"
-          value={techStack}
-          onChange={(e) => setTechStack(e.target.value)}
-          className="border p-2 rounded"
-        />
-        <input
-          placeholder="Project Link"
-          value={link}
-          onChange={(e) => setLink(e.target.value)}
-          className="border p-2 rounded"
-        />
-        <button type="submit" className="bg-blue-600 text-white p-2 rounded">
-          Add Project
-        </button>
-      </form>
-      {message && <p className="mt-4 text-red-500">{message}</p>}
+    <div className="p-8 max-w-3xl mx-auto">
+      <h1 className="text-2xl font-bold mb-6">Projects</h1>
+      <div className="flex justify-between items-center mb-6">
+        <Link
+          href="/projects/new"
+          className="bg-green-600 text-white px-3 py-1 rounded"
+        >
+          + Add Project
+        </Link>
+      </div>
+
+      <ul className="space-y-4">
+        {projects.map((project) => (
+          <li
+            key={project.id}
+            className="border p-4 rounded flex justify-between items-center"
+          >
+            {editingId === project.id ? (
+              <div className="flex flex-col gap-2 flex-1 mr-4">
+                <input
+                  value={formData.title}
+                  onChange={(e) =>
+                    setFormData({ ...formData, title: e.target.value })
+                  }
+                  className="border p-2 rounded"
+                />
+                <input
+                  value={formData.description}
+                  onChange={(e) =>
+                    setFormData({ ...formData, description: e.target.value })
+                  }
+                  className="border p-2 rounded"
+                />
+                <input
+                  value={formData.techStack}
+                  onChange={(e) =>
+                    setFormData({ ...formData, techStack: e.target.value })
+                  }
+                  className="border p-2 rounded"
+                />
+                <input
+                  value={formData.link}
+                  onChange={(e) =>
+                    setFormData({ ...formData, link: e.target.value })
+                  }
+                  className="border p-2 rounded"
+                />
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleUpdate(project.id)}
+                    className="bg-green-600 text-white px-3 py-1 rounded"
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={() => setEditingId(null)}
+                    className="bg-gray-400 text-white px-3 py-1 rounded"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div>
+                  <h2 className="font-semibold">{project.title}</h2>
+                  <p className="text-sm text-gray-600">
+                    {project.description}
+                  </p>
+                  <p className="text-sm text-gray-500">{project.techStack}</p>
+                  <a
+                    href={project.link}
+                    target="_blank"
+                    className="text-blue-600 underline text-sm"
+                  >
+                    View Project
+                  </a>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleEditClick(project)}
+                    className="bg-yellow-500 text-white px-3 py-1 rounded"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(project.id)}
+                    className="bg-red-600 text-white px-3 py-1 rounded"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </>
+            )}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

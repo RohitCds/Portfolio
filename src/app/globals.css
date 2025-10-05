@@ -4,6 +4,9 @@
 
 /* your custom CSS below */
 
+html {
+  scroll-behavior: smooth;
+}
 
 :root {
   --background: #ffffff;

@@ -5,9 +5,23 @@ import Sidebar from "@/components/Sidebar";
 import { FaLinkedin, FaGithub } from "react-icons/fa";
 import { HiOutlineMail } from "react-icons/hi";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
   const [collapsed, setCollapsed] = useState(false);
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      // redirect to login page
+      router.push("/login");
+    }
+  }, [status, router]);
+
+  if (status === "loading") return <p>Loading...</p>;
 
   return (
     <div className="flex">
@@ -136,70 +150,60 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* 💡 Projects Section */}
-        <section
-          id="projects"
-          className="h-screen bg-[#111111] text-white flex flex-col items-center justify-center px-6"
-        >
-          <h2 className="text-5xl font-extrabold mb-10 text-center">
-            Projects
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-4/5">
-            <div className="bg-gray-800 rounded-xl p-6 hover:scale-105 transition shadow-lg">
-              <h3 className="text-2xl font-bold mb-2">
-                Real-Time Disaster Response AI
-              </h3>
+        {/* Projects Section */}
+        <section className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-6 py-20" id="projects">
+          <h2 className="text-5xl font-extrabold mb-10 text-center">Projects</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl">
+
+            {/* Project 1 */}
+            <div className="bg-gray-900 p-6 rounded-2xl shadow-lg hover:shadow-2xl transition">
+              <h3 className="text-2xl font-bold mb-2">Resumot – Local Resume Q&A Engine</h3>
               <p className="text-gray-400 mb-4">
-                A multimodal AI system combining vision and language models for
-                emergency response analysis.
+                Built an offline LLM-powered resume Q&A system using Sentence Transformers, ChromaDB, and DeepSeek-13B with llama-cpp-python. Enables local semantic querying without GPUs or APIs. Frontend built with Streamlit.
               </p>
-              <a
-                href="https://github.com/yourrepo"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 hover:underline"
-              >
-                View on GitHub →
-              </a>
+              <a href="https://github.com/your-resumot-link" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">View Project →</a>
             </div>
 
-            <div className="bg-gray-800 rounded-xl p-6 hover:scale-105 transition shadow-lg">
-              <h3 className="text-2xl font-bold mb-2">
-                QueryGPT – Natural Language to SQL
-              </h3>
+            {/* Project 2 */}
+            <div className="bg-gray-900 p-6 rounded-2xl shadow-lg hover:shadow-2xl transition">
+              <h3 className="text-2xl font-bold mb-2">Dialogue Summarization & Detoxification</h3>
               <p className="text-gray-400 mb-4">
-                A text-to-SQL interface that interprets natural language queries
-                into structured SQL commands.
+                Enhanced the flan-t5-base model using PEFT and LoRA, combined with PPO for reinforcement learning. Integrated toxicity detection via RoBERTa for safe, ethical summarization with improved ROUGE metrics.
               </p>
-              <a
-                href="https://github.com/yourrepo"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 hover:underline"
-              >
-                View on GitHub →
-              </a>
+              <a href="https://github.com/your-dialogue-link" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">View Project →</a>
             </div>
 
-            <div className="bg-gray-800 rounded-xl p-6 hover:scale-105 transition shadow-lg">
-              <h3 className="text-2xl font-bold mb-2">
-                Football Analytics Dashboard
-              </h3>
+            {/* Project 3 */}
+            <div className="bg-gray-900 p-6 rounded-2xl shadow-lg hover:shadow-2xl transition">
+              <h3 className="text-2xl font-bold mb-2">Kafka Data Pipeline for User Analytics</h3>
               <p className="text-gray-400 mb-4">
-                Built using Python, React, and APIs from top European leagues to
-                analyze player and team performance.
+                End-to-end streaming pipeline using Apache Kafka, Airflow, PySpark, and Cassandra. Designed for scalable ingestion, processing, and real-time analytics of continuous user data streams.
               </p>
-              <a
-                href="https://github.com/yourrepo"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 hover:underline"
-              >
-                View on GitHub →
-              </a>
+              <a href="https://github.com/your-kafka-link" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">View Project →</a>
             </div>
+
+            {/* Project 4 */}
+            <div className="bg-gray-900 p-6 rounded-2xl shadow-lg hover:shadow-2xl transition">
+              <h3 className="text-2xl font-bold mb-2">College Faculty Review Platform</h3>
+              <p className="text-gray-400 mb-4">
+                Full-stack web app for anonymous faculty reviews using Node.js, Express, React, and MongoDB. Implemented Google OAuth 2.0 authentication via Passport.js for secure login.
+              </p>
+              <a href="https://github.com/your-faculty-review-link" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">View Project →</a>
+            </div>
+
+            {/* Project 5 */}
+            <div className="bg-gray-900 p-6 rounded-2xl shadow-lg hover:shadow-2xl transition">
+              <h3 className="text-2xl font-bold mb-2">AI Disaster Response System (Agentic + Multimodal)</h3>
+              <p className="text-gray-400 mb-4">
+                A simulated startup-scale AI platform integrating real-time image, text, and sensor data for disaster response. Combines multimodal LLMs and agentic workflows for rapid situational awareness.
+              </p>
+              <a href="https://github.com/your-disaster-ai-link" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">View Project →</a>
+            </div>
+
           </div>
         </section>
+
 
         {/* 📩 Contact Section */}
         <section

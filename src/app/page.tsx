@@ -46,11 +46,14 @@ export default function HomePage() {
           collapsed ? "ml-20" : "ml-52"
         }`}
       >
-        {/* Home Section */}
-        <section className="h-screen bg-black text-white flex flex-col items-center justify-center px-4" id="home">
+        {/* 🏠 Home Section */}
+        <section
+          id="home"
+          className="h-screen bg-gradient-to-b from-black to-gray-900 text-white flex flex-col items-center justify-center px-4"
+        >
           <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-gray-700 shadow-lg mb-8">
             <Image
-              src="/Portfolio Pic.jpg"
+              src="/Portfolio.jpg"
               alt="Rohit Shroff"
               width={192}
               height={192}
@@ -63,34 +66,157 @@ export default function HomePage() {
           <p className="mt-4 text-lg text-gray-400 text-center max-w-3xl">
             AI Engineer • Full-Stack ML Developer • Problem Solver
           </p>
+          <button className="mt-8 px-6 py-3 bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+            <a
+              href="/Rohit Shroff Resume.pdf"
+              download="Rohit Shroff Resume.pdf"
+            >
+              Download Resume
+            </a>
+          </button>
         </section>
 
-        {/* About Section */}
-        <section className="h-screen bg-black text-white flex flex-col items-center justify-center px-6" id="about">
+        {/* 👤 About Section */}
+        <section
+          id="about"
+          className="h-screen bg-[#0a0a0a] text-white flex flex-col items-center justify-center px-6"
+        >
           <h2 className="text-5xl font-extrabold mb-6 text-center">
             About Me
           </h2>
-          <p className="max-w-3xl text-center text-gray-400 text-lg leading-relaxed">
-            Hello there. I’m a software and AI/ML enthusiast who likes to build end-to-end scalable applications. I have experience in Machine Learning, NLP, and cloud technologies, while also having built full-stack web applications. I focus on bridging data, AI, and software to solve real-world problems with innovative solutions. Coupled with a strong sense of leadership and effective communication skills, I thrive in collaborative environments where I can contribute to impactful projects and continuously learn emerging technologies.
-          </p>
+          <div className="max-w-4xl text-center text-gray-400 text-lg leading-relaxed">
+            <p>
+              Hello there 👋 I’m a software and AI/ML enthusiast passionate about
+              building end-to-end intelligent systems that make a difference.
+              I specialize in bridging the gap between data, AI, and full-stack
+              software engineering — developing impactful products that scale.
+            </p>
+            <p className="mt-4">
+              I’m driven by curiosity, creativity, and collaboration — aiming to
+              turn real-world challenges into opportunities for innovation.
+            </p>
+          </div>
         </section>
 
         {/* Skills Section */}
-        <section className="h-screen bg-black text-white flex flex-col items-center justify-center px-6" id="skills">
-          <h2 className="text-5xl font-extrabold mb-6 text-center">Skills</h2>
-          {/* You can add skill bars or cards here */}
+        <section className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white flex flex-col items-center justify-center px-6" id="skills">
+          <h2 className="text-5xl font-extrabold mb-10 text-center">Skills</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl text-gray-300">
+            
+            <div>
+              <h3 className="text-2xl font-semibold mb-3 text-white">Machine Learning & AI</h3>
+              <p>Python, TensorFlow, PyTorch, Scikit-Learn, Transformers (BERT, T5), NLP, PEFT, LoRA, RLHF, PPO, Generative AI, LLM Fine-tuning</p>
+            </div>
+            
+            <div>
+              <h3 className="text-2xl font-semibold mb-3 text-white">Big Data & Cloud</h3>
+              <p>Apache Kafka, PySpark, Airflow, Cassandra, Docker, Oracle Cloud Infrastructure (OCI), Azure, Cloud Deployment</p>
+            </div>
+            
+            <div>
+              <h3 className="text-2xl font-semibold mb-3 text-white">Data Analytics</h3>
+              <p>Oracle Analytics Cloud (OAC), Tableau, Power BI, Data Visualization, Dashboard Development, SQL, Pandas, Seaborn, Matplotlib, Plotly</p>
+            </div>
+            
+            <div>
+              <h3 className="text-2xl font-semibold mb-3 text-white">Full-Stack Development</h3>
+              <p>React.js, Node.js, Express.js, REST APIs, JavaScript, TypeScript, HTML, CSS, Bootstrap, Passport.js, OAuth 2.0</p>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-semibold mb-3 text-white">Databases</h3>
+              <p>SQL, MongoDB (Mongoose), ChromaDB, Cassandra, Data Modeling</p>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-semibold mb-3 text-white">Other Tools</h3>
+              <p>Git, GitHub, Streamlit, FastAPI, Jupyter, VS Code, Postman</p>
+            </div>
+
+          </div>
         </section>
 
-        {/* Projects Section */}
-        <section className="h-screen bg-black text-white flex flex-col items-center justify-center px-6" id="projects">
-          <h2 className="text-5xl font-extrabold mb-6 text-center">Projects</h2>
-          {/* Add project cards/components here */}
+        {/* 💡 Projects Section */}
+        <section
+          id="projects"
+          className="h-screen bg-[#111111] text-white flex flex-col items-center justify-center px-6"
+        >
+          <h2 className="text-5xl font-extrabold mb-10 text-center">
+            Projects
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-4/5">
+            <div className="bg-gray-800 rounded-xl p-6 hover:scale-105 transition shadow-lg">
+              <h3 className="text-2xl font-bold mb-2">
+                Real-Time Disaster Response AI
+              </h3>
+              <p className="text-gray-400 mb-4">
+                A multimodal AI system combining vision and language models for
+                emergency response analysis.
+              </p>
+              <a
+                href="https://github.com/yourrepo"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:underline"
+              >
+                View on GitHub →
+              </a>
+            </div>
+
+            <div className="bg-gray-800 rounded-xl p-6 hover:scale-105 transition shadow-lg">
+              <h3 className="text-2xl font-bold mb-2">
+                QueryGPT – Natural Language to SQL
+              </h3>
+              <p className="text-gray-400 mb-4">
+                A text-to-SQL interface that interprets natural language queries
+                into structured SQL commands.
+              </p>
+              <a
+                href="https://github.com/yourrepo"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:underline"
+              >
+                View on GitHub →
+              </a>
+            </div>
+
+            <div className="bg-gray-800 rounded-xl p-6 hover:scale-105 transition shadow-lg">
+              <h3 className="text-2xl font-bold mb-2">
+                Football Analytics Dashboard
+              </h3>
+              <p className="text-gray-400 mb-4">
+                Built using Python, React, and APIs from top European leagues to
+                analyze player and team performance.
+              </p>
+              <a
+                href="https://github.com/yourrepo"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:underline"
+              >
+                View on GitHub →
+              </a>
+            </div>
+          </div>
         </section>
 
-        {/* Contact Section */}
-        <section className="h-screen bg-black text-white flex flex-col items-center justify-center px-6" id="contact">
-          <h2 className="text-5xl font-extrabold mb-6 text-center">Contact</h2>
-          {/* Add contact form or info here */}
+        {/* 📩 Contact Section */}
+        <section
+          id="contact"
+          className="h-screen bg-gradient-to-b from-black to-gray-900 text-white flex flex-col items-center justify-center px-6"
+        >
+          <h2 className="text-5xl font-extrabold mb-8 text-center">Contact</h2>
+          <p className="text-gray-400 mb-6 text-center text-lg max-w-xl">
+            Let’s collaborate or just have a chat about AI, tech, or your next
+            project idea.
+          </p>
+          <a
+            href="mailto:your.email@example.com"
+            className="bg-blue-600 px-8 py-3 rounded-lg hover:bg-blue-700 transition text-white"
+          >
+            Get in Touch
+          </a>
         </section>
       </main>
     </div>

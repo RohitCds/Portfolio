@@ -14,12 +14,19 @@ export default function HomePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [aboutContent, setAboutContent] = useState("");
+  const [skills, setSkills] = useState([]);
 
-  useEffect(() => {
-    fetch("/api/about")
-      .then((res) => res.json())
-      .then((data) => setAboutContent(data.content));
-  }, []);
+
+useEffect(() => {
+  fetch("/api/about")
+    .then((res) => res.json())
+    .then((data) => setAboutContent(data.content));
+
+  fetch("/api/skills")
+    .then((res) => res.json())
+    .then((data) => setSkills(data.sort((a: any, b: any) => a.order - b.order)));
+}, []);
+
 
 
 
@@ -121,7 +128,7 @@ export default function HomePage() {
         >
           {isAdmin && (
             <button
-              onClick={() => console.log("Edit Skills Section")}
+              onClick={() => router.push("/skills/edit")}
               className="absolute top-6 right-6 text-sm bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-lg"
             >
               ✏️ Edit
@@ -130,50 +137,14 @@ export default function HomePage() {
 
           <h2 className="text-5xl font-extrabold mb-10 text-center">Skills</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl text-gray-300">
-            <div>
-              <h3 className="text-2xl font-semibold mb-3 text-white">
-                Machine Learning & AI
-              </h3>
-              <p>
-                Python, TensorFlow, PyTorch, Scikit-Learn, Transformers (BERT,
-                T5), NLP, PEFT, LoRA, RLHF, PPO, Generative AI, LLM Fine-tuning
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-2xl font-semibold mb-3 text-white">Big Data & Cloud</h3>
-              <p>
-                Apache Kafka, PySpark, Airflow, Cassandra, Docker, Oracle Cloud
-                Infrastructure (OCI), Azure, Cloud Deployment
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-2xl font-semibold mb-3 text-white">Data Analytics</h3>
-              <p>
-                Oracle Analytics Cloud (OAC), Tableau, Power BI, Data
-                Visualization, Dashboard Development, SQL, Pandas, Seaborn,
-                Matplotlib, Plotly
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-2xl font-semibold mb-3 text-white">Full-Stack Development</h3>
-              <p>
-                React.js, Node.js, Express.js, REST APIs, JavaScript, TypeScript,
-                HTML, CSS, Bootstrap, Passport.js, OAuth 2.0
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-2xl font-semibold mb-3 text-white">Databases</h3>
-              <p>SQL, MongoDB (Mongoose), ChromaDB, Cassandra, Data Modeling</p>
-            </div>
-
-            <div>
-              <h3 className="text-2xl font-semibold mb-3 text-white">Other Tools</h3>
-              <p>Git, GitHub, Streamlit, FastAPI, Jupyter, VS Code, Postman</p>
-            </div>
+            {skills.map((skill: any) => (
+              <div key={skill.id}>
+                <h3 className="text-2xl font-semibold mb-3 text-white">
+                  {skill.category}
+                </h3>
+                <p>{skill.name}</p>
+              </div>
+            ))}
           </div>
         </section>
 

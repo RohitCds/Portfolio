@@ -52,3 +52,12 @@ model AboutMe {
   content   String   @db.Text
   updatedAt DateTime @updatedAt
 }
+
+model Skill {
+  id       Int    @id @default(autoincrement())
+  category String
+  name     String
+  order    Int    @default(0)
+}
+
+

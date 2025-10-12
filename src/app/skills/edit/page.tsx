@@ -14,14 +14,22 @@ export default function EditSkills() {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [newSkill, setNewSkill] = useState("");
   const [newCategory, setNewCategory] = useState("");
+  const [categoryType, setCategoryType] = useState<"new" | "existing">("new");
+  const [existingCategories, setExistingCategories] = useState<string[]>([]);
   const [adding, setAdding] = useState(false);
+  const [editingSkill, setEditingSkill] = useState<Skill | null>(null);
   const router = useRouter();
 
-  // Fetch existing skills
+  // Fetch skills on load
   useEffect(() => {
     fetch("/api/skills")
       .then((res) => res.json())
-      .then((data) => setSkills(data));
+      .then((data: Skill[]) => {
+        setSkills(data);
+        const categories = Array.from(new Set(data.map((s) => s.category)));
+        setExistingCategories(categories);
+      })
+      .catch((err) => console.error("Failed to fetch skills:", err));
   }, []);
 
   // Group skills by category
@@ -34,13 +42,16 @@ export default function EditSkills() {
   const handleAddClick = () => setAdding(true);
 
   const handleSave = async () => {
-    if (newSkill.trim() && newCategory.trim()) {
+    const categoryToUse =
+      categoryType === "new" ? newCategory.trim() : newCategory;
+
+    if (newSkill.trim() && categoryToUse) {
       const res = await fetch("/api/skills", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: newSkill,
-          category: newCategory,
+          category: categoryToUse,
         }),
       });
 
@@ -49,7 +60,12 @@ export default function EditSkills() {
         setSkills([...skills, savedSkill]);
         setNewSkill("");
         setNewCategory("");
+        setCategoryType("new");
         setAdding(false);
+
+        if (!existingCategories.includes(savedSkill.category)) {
+          setExistingCategories([...existingCategories, savedSkill.category]);
+        }
       } else {
         alert("Failed to save skill. Please try again.");
       }
@@ -59,7 +75,43 @@ export default function EditSkills() {
   const handleClose = () => {
     setNewSkill("");
     setNewCategory("");
+    setCategoryType("new");
     setAdding(false);
+    setEditingSkill(null);
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm("Are you sure you want to delete this skill?")) return;
+
+    const res = await fetch("/api/skills", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+
+    if (res.ok) {
+      setSkills(skills.filter((s) => s.id !== id));
+    } else {
+      alert("Failed to delete skill.");
+    }
+  };
+
+  const handleUpdate = async () => {
+    if (!editingSkill) return;
+
+    const res = await fetch("/api/skills", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(editingSkill),
+    });
+
+    if (res.ok) {
+      const updated = await res.json();
+      setSkills(skills.map((s) => (s.id === updated.id ? updated : s)));
+      setEditingSkill(null);
+    } else {
+      alert("Failed to update skill.");
+    }
   };
 
   return (
@@ -79,20 +131,82 @@ export default function EditSkills() {
             className="bg-gray-900 p-6 rounded-2xl shadow-lg border border-gray-800"
             whileHover={{ scale: 1.01 }}
           >
-            <h2 className="text-2xl font-semibold mb-4 text-blue-400">{category}</h2>
+            <h2 className="text-2xl font-semibold mb-4 text-blue-400">
+              {category}
+            </h2>
             <div className="flex flex-wrap gap-2">
               {categorySkills.map((skill) => (
-                <span
+                <motion.div
                   key={skill.id}
-                  className="bg-gray-800 px-3 py-1 rounded-full text-sm shadow-sm"
+                  layout
+                  className="flex items-center gap-2 bg-gray-800 px-3 py-1 rounded-full text-sm shadow-sm"
                 >
-                  {skill.name}
-                </span>
+                  {editingSkill?.id === skill.id ? (
+                    <>
+                      <input
+                        type="text"
+                        value={editingSkill.name}
+                        onChange={(e) =>
+                          setEditingSkill({
+                            ...editingSkill,
+                            name: e.target.value,
+                          })
+                        }
+                        className="bg-gray-700 text-white px-2 py-1 rounded-md focus:outline-none"
+                      />
+                      <select
+                        value={editingSkill.category}
+                        onChange={(e) =>
+                          setEditingSkill({
+                            ...editingSkill,
+                            category: e.target.value,
+                          })
+                        }
+                        className="bg-gray-700 text-white px-2 py-1 rounded-md focus:outline-none"
+                      >
+                        {existingCategories.map((cat) => (
+                          <option key={cat} value={cat}>
+                            {cat}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        onClick={handleUpdate}
+                        className="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded-md text-xs"
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={() => setEditingSkill(null)}
+                        className="bg-gray-600 hover:bg-gray-700 text-white px-2 py-1 rounded-md text-xs"
+                      >
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <span>{skill.name}</span>
+                      <button
+                        onClick={() => setEditingSkill(skill)}
+                        className="text-yellow-400 hover:text-yellow-300 text-xs"
+                      >
+                        ✏️
+                      </button>
+                      <button
+                        onClick={() => handleDelete(skill.id)}
+                        className="text-red-400 hover:text-red-300 text-xs"
+                      >
+                        🗑️
+                      </button>
+                    </>
+                  )}
+                </motion.div>
               ))}
             </div>
           </motion.div>
         ))}
 
+        {/* Add new skill section */}
         <AnimatePresence>
           {adding && (
             <motion.div
@@ -102,13 +216,40 @@ export default function EditSkills() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
             >
-              <input
-                type="text"
-                value={newCategory}
-                onChange={(e) => setNewCategory(e.target.value)}
-                placeholder="Enter category (e.g. Frontend, Backend, AI/ML)"
+              <select
+                value={categoryType}
+                onChange={(e) =>
+                  setCategoryType(e.target.value as "new" | "existing")
+                }
                 className="w-full px-3 py-2 bg-gray-800 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              >
+                <option value="new">New Category</option>
+                <option value="existing">Existing Category</option>
+              </select>
+
+              {categoryType === "new" ? (
+                <input
+                  type="text"
+                  value={newCategory}
+                  onChange={(e) => setNewCategory(e.target.value)}
+                  placeholder="Enter new category (e.g. Frontend, AI/ML)"
+                  className="w-full px-3 py-2 bg-gray-800 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              ) : (
+                <select
+                  value={newCategory}
+                  onChange={(e) => setNewCategory(e.target.value)}
+                  className="w-full px-3 py-2 bg-gray-800 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select existing category</option>
+                  {existingCategories.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              )}
+
               <input
                 type="text"
                 value={newSkill}
@@ -116,6 +257,7 @@ export default function EditSkills() {
                 placeholder="Enter new skill (e.g. Next.js)"
                 className="w-full px-3 py-2 bg-gray-800 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+
               <div className="flex justify-end gap-3">
                 <button
                   onClick={handleClose}
@@ -134,6 +276,7 @@ export default function EditSkills() {
           )}
         </AnimatePresence>
 
+        {/* Add & Done buttons */}
         <div className="flex justify-between items-center mt-8">
           <button
             onClick={handleAddClick}
@@ -147,7 +290,7 @@ export default function EditSkills() {
             ➕ Add Skill
           </button>
 
-          {!adding && (
+          {!adding && !editingSkill && (
             <motion.button
               onClick={() => router.push("/")}
               className="px-5 py-2 bg-green-600 hover:bg-green-700 rounded-lg font-medium transition"

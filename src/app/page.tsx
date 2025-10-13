@@ -48,7 +48,7 @@ useEffect(() => {
       {/* Social Icons - Top Right */}
       <div className="fixed top-4 right-4 flex gap-4 z-50">
         <a
-          href="https://www.linkedin.com/in/your-linkedin-id"
+          href="https://www.linkedin.com/in/rohit-shroff/"
           target="_blank"
           rel="noopener noreferrer"
           className="text-white hover:text-blue-500 transition duration-300"
@@ -56,7 +56,7 @@ useEffect(() => {
           <FaLinkedin className="w-10 h-10" />
         </a>
         <a
-          href="https://github.com/your-github-username"
+          href="https://github.com/RohitCds"
           target="_blank"
           rel="noopener noreferrer"
           className="text-white hover:text-gray-400 transition duration-300"
@@ -64,7 +64,7 @@ useEffect(() => {
           <FaGithub className="w-10 h-10" />
         </a>
         <a
-          href="mailto:your.email@example.com"
+          href="mailto:rohitshroff02@gmail.com"
           className="text-white hover:text-red-500 transition duration-300"
         >
           <HiOutlineMail className="w-10 h-10" />
@@ -223,7 +223,7 @@ useEffect(() => {
             project idea.
           </p>
           <a
-            href="mailto:your.email@example.com"
+            href="mailto:rohitshroff02@gmail.com"
             className="bg-blue-600 px-8 py-3 rounded-lg hover:bg-blue-700 transition text-white"
           >
             Get in Touch

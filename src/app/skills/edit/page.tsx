@@ -26,16 +26,29 @@ export default function EditSkills() {
       .then((res) => res.json())
       .then((data: Skill[]) => {
         setSkills(data);
-        const categories = Array.from(new Set(data.map((s) => s.category)));
+        const categories = Array.from(
+          new Set(
+            data.map((s) => 
+              s.category.trim().charAt(0).toUpperCase() +
+              s.category.trim().slice(1).toLowerCase()
+            )
+          )
+        );
         setExistingCategories(categories);
       })
       .catch((err) => console.error("Failed to fetch skills:", err));
   }, []);
 
-  // Group skills by category
   const groupedSkills = skills.reduce((acc: Record<string, Skill[]>, skill) => {
-    if (!acc[skill.category]) acc[skill.category] = [];
-    acc[skill.category].push(skill);
+    const normalizedCategory =
+      skill.category.trim().charAt(0).toUpperCase() +
+      skill.category.trim().slice(1).toLowerCase();
+
+    if (!acc[normalizedCategory]) acc[normalizedCategory] = [];
+    acc[normalizedCategory].push({
+      ...skill,
+      category: normalizedCategory
+    });
     return acc;
   }, {});
 
@@ -43,29 +56,57 @@ export default function EditSkills() {
 
   const handleSave = async () => {
     const categoryToUse =
-      categoryType === "new" ? newCategory.trim() : newCategory;
+      categoryType === "new" ? newCategory.trim() : newCategory.trim();
 
     if (newSkill.trim() && categoryToUse) {
+      const normalizedCategory =
+        categoryToUse.charAt(0).toUpperCase() +
+        categoryToUse.slice(1).toLowerCase();
+
       const res = await fetch("/api/skills", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: newSkill,
-          category: categoryToUse,
+          name: newSkill.trim(),
+          category: normalizedCategory,
         }),
       });
 
       if (res.ok) {
         const savedSkill = await res.json();
-        setSkills([...skills, savedSkill]);
+
+        const updatedSkill = {
+          ...savedSkill,
+          category: normalizedCategory,
+        };
+
+        setSkills((prev) => {
+          const exists = prev.some(
+            (s) =>
+              s.name.toLowerCase() === updatedSkill.name.toLowerCase() &&
+              s.category.toLowerCase() === updatedSkill.category.toLowerCase()
+          );
+          if (exists) return prev;
+
+          return [...prev, updatedSkill];
+        });
+
+        setExistingCategories((prev) => {
+          const normalizedSet = new Set(
+            prev.map(
+              (cat) =>
+                cat.charAt(0).toUpperCase() +
+                cat.slice(1).toLowerCase()
+            )
+          );
+          normalizedSet.add(normalizedCategory);
+          return Array.from(normalizedSet);
+        });
+
         setNewSkill("");
         setNewCategory("");
         setCategoryType("new");
         setAdding(false);
-
-        if (!existingCategories.includes(savedSkill.category)) {
-          setExistingCategories([...existingCategories, savedSkill.category]);
-        }
       } else {
         alert("Failed to save skill. Please try again.");
       }

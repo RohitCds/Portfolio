@@ -136,17 +136,30 @@ useEffect(() => {
           )}
 
           <h2 className="text-5xl font-extrabold mb-10 text-center">Skills</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl text-gray-300">
-            {skills.map((skill: any) => (
-              <div key={skill.id}>
-                <h3 className="text-2xl font-semibold mb-3 text-white">
-                  {skill.category}
-                </h3>
-                <p>{skill.name}</p>
+
+          {/* Group skills by category */}
+          {(() => {
+            const grouped = skills.reduce((acc: Record<string, string[]>, skill: any) => {
+              if (!acc[skill.category]) acc[skill.category] = [];
+              acc[skill.category].push(skill.name);
+              return acc;
+            }, {});
+
+            return (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl text-gray-300">
+                {Object.entries(grouped).map(([category, skillNames]) => (
+                  <div key={category}>
+                    <h3 className="text-2xl font-semibold mb-3 text-white">
+                      {category}
+                    </h3>
+                    <p>{(skillNames as string[]).join(", ")}</p>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            );
+          })()}
         </section>
+
 
         {/* Projects Section */}
         <section

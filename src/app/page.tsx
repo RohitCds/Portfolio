@@ -15,6 +15,7 @@ export default function HomePage() {
   const router = useRouter();
   const [aboutContent, setAboutContent] = useState("");
   const [skills, setSkills] = useState([]);
+  const [projects, setProjects] = useState([]);
 
 
 useEffect(() => {
@@ -25,8 +26,12 @@ useEffect(() => {
   fetch("/api/skills")
     .then((res) => res.json())
     .then((data) => setSkills(data.sort((a: any, b: any) => a.order - b.order)));
-}, []);
 
+  // Fetch projects from database
+  fetch("/api/projects")
+    .then((res) => res.json())
+    .then((data) => setProjects(data));
+}, []);
 
 
 
@@ -168,7 +173,7 @@ useEffect(() => {
         >
           {isAdmin && (
             <button
-              onClick={() => console.log("Edit Projects Section")}
+              onClick={() => router.push("/projects/edit")}
               className="absolute top-6 right-6 text-sm bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-lg"
             >
               ✏️ Edit
@@ -178,40 +183,23 @@ useEffect(() => {
           <h2 className="text-5xl font-extrabold mb-10 text-center">Projects</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl">
-            {/* Project 1 */} 
-            <div className="bg-gray-900 p-6 rounded-2xl shadow-lg hover:shadow-2xl transition"> 
-                <h3 className="text-2xl font-bold mb-2">Resumot – Local Resume Q&A Engine</h3> 
-                <p className="text-gray-400 mb-4"> Built an offline LLM-powered resume Q&A system using Sentence Transformers, ChromaDB, and DeepSeek-13B with llama-cpp-python. Enables local semantic querying without GPUs or APIs. Frontend built with Streamlit. </p> 
-                <a href="https://github.com/your-resumot-link" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">View Project →</a> 
-            </div> 
-            
-            {/* Project 2 */} 
-            <div className="bg-gray-900 p-6 rounded-2xl shadow-lg hover:shadow-2xl transition"> 
-                <h3 className="text-2xl font-bold mb-2">Dialogue Summarization & Detoxification</h3> 
-                <p className="text-gray-400 mb-4"> Enhanced the flan-t5-base model using PEFT and LoRA, combined with PPO for reinforcement learning. Integrated toxicity detection via RoBERTa for safe, ethical summarization with improved ROUGE metrics. </p> 
-                <a href="https://github.com/your-dialogue-link" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">View Project →</a> 
-            </div> 
-            
-            {/* Project 3 */} 
-            <div className="bg-gray-900 p-6 rounded-2xl shadow-lg hover:shadow-2xl transition"> 
-                <h3 className="text-2xl font-bold mb-2">Kafka Data Pipeline for User Analytics</h3> 
-                <p className="text-gray-400 mb-4"> End-to-end streaming pipeline using Apache Kafka, Airflow, PySpark, and Cassandra. Designed for scalable ingestion, processing, and real-time analytics of continuous user data streams. </p> 
-                <a href="https://github.com/your-kafka-link" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">View Project →</a> 
-            </div> 
-            
-            {/* Project 4 */} 
-            <div className="bg-gray-900 p-6 rounded-2xl shadow-lg hover:shadow-2xl transition"> 
-                <h3 className="text-2xl font-bold mb-2">College Faculty Review Platform</h3> 
-                <p className="text-gray-400 mb-4"> Full-stack web app for anonymous faculty reviews using Node.js, Express, React, and MongoDB. Implemented Google OAuth 2.0 authentication via Passport.js for secure login. </p> 
-                <a href="https://github.com/your-faculty-review-link" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">View Project →</a> 
-            </div> 
-            
-            {/* Project 5 */} 
-            <div className="bg-gray-900 p-6 rounded-2xl shadow-lg hover:shadow-2xl transition"> 
-                <h3 className="text-2xl font-bold mb-2">AI Disaster Response System (Agentic + Multimodal)</h3> 
-                <p className="text-gray-400 mb-4"> A simulated startup-scale AI platform integrating real-time image, text, and sensor data for disaster response. Combines multimodal LLMs and agentic workflows for rapid situational awareness. </p> 
-                <a href="https://github.com/your-disaster-ai-link" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">View Project →</a> 
-            </div>
+            {projects.map((project: any) => (
+              <div
+                key={project.id}
+                className="bg-gray-900 p-6 rounded-2xl shadow-lg hover:shadow-2xl transition"
+              >
+                <h3 className="text-2xl font-bold mb-2">{project.title}</h3>
+                <p className="text-gray-400 mb-4">{project.description}</p>
+                <a
+                  href={project.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 hover:underline"
+                >
+                  View Project →
+                </a>
+              </div>
+            ))}
           </div>
         </section>
 

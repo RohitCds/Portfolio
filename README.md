@@ -226,36 +226,13 @@ model AboutMe {
 - [ ] Implement image upload for projects
 - [ ] Add testimonials section
 
-## 🤝 Contributing
 
-Contributions are welcome! Feel free to:
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 👤 Author
 
 **Rohit Shroff**
 - LinkedIn: [linkedin.com/in/rohit-shroff](https://linkedin.com/in/rohit-shroff/)
 - GitHub: [@RohitCds](https://github.com/RohitCds)
-- Portfolio: [your-portfolio.vercel.app](https://your-portfolio.vercel.app)
+- Portfolio: 
 - Email: rohitshroff02@gmail.com
 
-## 🙏 Acknowledgments
-
-- Next.js team for the amazing framework
-- Vercel for hosting and deployment platform
-- Prisma for the excellent ORM
-- All open-source contributors
-
----
-
-⭐ If you found this project helpful, please consider giving it a star!
-
-**Built with ❤️ using Next.js**

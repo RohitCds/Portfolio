@@ -86,7 +86,7 @@ useEffect(() => {
 
           <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-gray-700 shadow-lg mb-8">
             <Image
-              src="/Portfolio.jpg"
+              src="/Profile Pic LinkedIn.jpeg"
               alt="Rohit Shroff"
               width={192}
               height={192}
@@ -208,14 +208,6 @@ useEffect(() => {
           id="contact"
           className="relative h-screen bg-gradient-to-b from-black to-gray-900 text-white flex flex-col items-center justify-center px-6"
         >
-          {isAdmin && (
-            <button
-              onClick={() => console.log("Edit Contact Section")}
-              className="absolute top-6 right-6 text-sm bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-lg"
-            >
-              ✏️ Edit
-            </button>
-          )}
 
           <h2 className="text-5xl font-extrabold mb-8 text-center">Contact</h2>
           <p className="text-gray-400 mb-6 text-center text-lg max-w-xl">

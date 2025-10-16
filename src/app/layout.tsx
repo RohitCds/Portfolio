@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Rohit Shroff - Portfolio",
+  title: "Rohit Shroff",
   description: "AI Engineer • Full-Stack ML Developer • Problem Solver",
 };
 

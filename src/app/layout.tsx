@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { Providers } from "@/components/Providers";
@@ -14,6 +14,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
 export const metadata: Metadata = {
   title: "Rohit Shroff",
   description: "AI Engineer • Full-Stack ML Developer • Problem Solver",
@@ -22,23 +28,23 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} antialiased`}>
         <Providers>
           {children}
-          
+
           {/* Footer with hidden admin login link */}
-          <footer className="text-center text-gray-500 text-sm py-6 bg-black">
-            © {new Date().getFullYear()} Rohit Shroff
+          <footer className="relative z-10 border-t border-line py-8 text-center font-mono text-xs text-dim">
+            © {new Date().getFullYear()} Rohit Shroff · transmitted from Earth
             <a
-              href="/admin-login-9271"  // Changed from "/login"
-              className="ml-2 text-xs opacity-30 hover:opacity-100 transition-opacity"
+              href="/admin-login-9271"
+              className="ml-2 opacity-30 transition-opacity hover:opacity-100"
               title="Admin"
             >
               ⚙️
             </a>
           </footer>
         </Providers>
-        
+
         <Toaster position="top-right" />
       </body>
     </html>

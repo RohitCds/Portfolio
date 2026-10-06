@@ -2,35 +2,122 @@
 @tailwind components;
 @tailwind utilities;
 
-/* your custom CSS below */
+:root {
+  --void: #04050c;
+  --star: #e9ecf8;
+  --mint: #6ef2c8;
+  --indigo: #7b7ff6;
+  color-scheme: dark;
+}
 
 html {
   scroll-behavior: smooth;
-}
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  background: var(--void);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--void);
+  color: var(--star);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(110, 242, 200, 0.3);
+  color: #fff;
+}
+
+@layer components {
+  /* Small uppercase mono label used for eyebrows / HUD text */
+  .hud {
+    @apply font-mono text-[11px] uppercase tracking-[0.22em] text-haze;
+  }
+
+  .glass {
+    @apply border border-line bg-white/[0.03] backdrop-blur-md;
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .text-aurora {
+    background: linear-gradient(100deg, #6ef2c8 0%, #5aa9ff 45%, #a58bff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 rounded-full bg-mint px-6 py-3 text-sm font-semibold text-void transition
+      hover:shadow-[0_0_32px_rgba(110,242,200,0.55)] hover:-translate-y-0.5;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-3 text-sm font-medium text-star transition
+      hover:border-mint/60 hover:text-mint;
+  }
+}
+
+/* ----- Planets ----- */
+.planet-body {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background:
+    radial-gradient(circle at var(--lx, 35%) var(--ly, 35%), var(--p-light) 0%, var(--p-mid) 38%, var(--p-dark) 72%, #02030a 100%);
+  box-shadow:
+    0 0 calc(var(--glow, 0.4) * 60px) calc(var(--glow, 0.4) * 6px) var(--p-glow),
+    inset 0 0 12px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.planet-body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--p-texture, none);
+  mix-blend-mode: overlay;
+  opacity: 0.85;
+}
+
+/* night side: a shadow that faces away from the star */
+.planet-body::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at var(--sx, 70%) var(--sy, 70%), rgba(2, 3, 10, 0.75) 0%, rgba(2, 3, 10, 0) 62%);
+}
+
+.planet-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 190%;
+  height: 52%;
+  border-radius: 50%;
+  border: 2px solid var(--p-ring, rgba(255, 255, 255, 0.4));
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--p-ring, white) 25%, transparent);
+  transform: translate(-50%, -50%) rotate(-16deg);
+}
+
+.planet-ring.front {
+  clip-path: inset(50% 0 0 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }

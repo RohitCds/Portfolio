@@ -23,7 +23,7 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="relative overflow-hidden px-6 pb-56 pt-32 sm:pb-64">
+    <section id="contact" className="relative flex min-h-screen flex-col justify-center overflow-hidden px-6 pb-56 pt-32 sm:pb-64">
       <div className="relative z-10 mx-auto max-w-4xl text-center">
         <Reveal>
           <p className="hud mb-5 flex items-center justify-center gap-3">

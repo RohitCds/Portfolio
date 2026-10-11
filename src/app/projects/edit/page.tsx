@@ -247,7 +247,7 @@ export default function EditProjects() {
 
           {!adding && !editingProject && (
             <motion.button
-              onClick={() => router.push("/")}
+              onClick={() => router.push("/projects")}
               className="px-5 py-2 bg-green-600 hover:bg-green-700 rounded-lg font-medium transition"
               whileHover={{ scale: 1.05 }}
             >

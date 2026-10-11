@@ -39,7 +39,7 @@ export default function EditAboutPage() {
       if (!res.ok) throw new Error("Failed to save About Me");
 
       toast.success("About Me updated successfully!");
-      router.push("/");
+      router.push("/about");
     } catch (err) {
       console.error(err);
       toast.error("Failed to save About Me content.");
@@ -47,7 +47,7 @@ export default function EditAboutPage() {
   };
 
   const handleCancel = () => {
-    router.push("/");
+    router.push("/about");
   };
 
   if (loading) {

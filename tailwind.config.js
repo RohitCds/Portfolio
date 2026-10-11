@@ -33,17 +33,12 @@ module.exports = {
           "0%, 100%": { opacity: "1", transform: "scale(1)" },
           "50%": { opacity: "0.4", transform: "scale(0.8)" },
         },
-        scrollCue: {
-          "0%": { transform: "translateY(-100%)" },
-          "100%": { transform: "translateY(200%)" },
-        },
       },
       animation: {
         float: "float 7s ease-in-out infinite",
         "spin-slow": "spin 40s linear infinite",
         "spin-slower": "spin 70s linear infinite",
         "pulse-dot": "pulseDot 2.4s ease-in-out infinite",
-        "scroll-cue": "scrollCue 2s ease-in-out infinite",
       },
     },
   },

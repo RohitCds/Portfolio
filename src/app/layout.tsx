@@ -21,7 +21,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Rohit Shroff",
+  title: { default: "Rohit Shroff", template: "%s · Rohit Shroff" },
   description: "AI Engineer • Full-Stack ML Developer • Problem Solver",
 };
 

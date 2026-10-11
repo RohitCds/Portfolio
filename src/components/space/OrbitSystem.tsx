@@ -32,12 +32,17 @@ const smoothstep = (a: number, b: number, t: number) => {
 };
 const mod = (a: number, n: number) => ((a % n) + n) % n;
 
-function computeGeometry(w: number, n: number): Geometry {
+// h is the stage's measured height: on desktop it stretches to fill the viewport
+function computeGeometry(w: number, h: number, n: number): Geometry {
   const mobile = w < 760;
-  const h = mobile ? 440 : 720;
+  const focusSize = mobile ? Math.min(170, w * 0.4, h * 0.38) : Math.min(210, h * 0.3);
+  const sunSize = mobile ? 64 : 80;
+  const anchorY = h * (mobile ? 0.64 : 0.62);
+  const lift = focusSize / 2 + sunSize / 2 + 18;
   const rMax = mobile ? w * 0.46 : Math.min(w * 0.42, 520);
   const rMin = n <= 1 ? rMax : rMax * (mobile ? 0.42 : 0.34);
-  const tilt = mobile ? 0.4 : 0.3;
+  // flatten the orbits on short screens so the far side never leaves the stage
+  const tilt = Math.min(mobile ? 0.4 : 0.3, (anchorY - lift - 28) / rMax);
   const orbits = Array.from({ length: n }, (_, i) => {
     const rx = n <= 1 ? rMax : rMin + ((rMax - rMin) * i) / (n - 1);
     const size = (mobile ? 30 : 46) + ((i * 7) % 3) * (mobile ? 5 : 9);
@@ -45,9 +50,7 @@ function computeGeometry(w: number, n: number): Geometry {
     const omega = 0.16 * Math.pow(rMin / rx, 1.5);
     return { rx, ry: rx * tilt, size, omega };
   });
-  const focusSize = mobile ? Math.min(170, w * 0.4) : 210;
-  const sunSize = mobile ? 64 : 80;
-  return { w, h, mobile, anchorY: h * (mobile ? 0.64 : 0.62), focusSize, lift: focusSize / 2 + sunSize / 2 + 18, orbits };
+  return { w, h, mobile, anchorY, focusSize, lift, orbits };
 }
 
 export default function OrbitSystem({ projects }: { projects: Project[] }) {
@@ -77,7 +80,7 @@ export default function OrbitSystem({ projects }: { projects: Project[] }) {
     const el = stageRef.current;
     if (!el) return;
     const update = () => {
-      const g = computeGeometry(el.clientWidth, n);
+      const g = computeGeometry(el.clientWidth, el.clientHeight, n);
       geoRef.current = g;
       setGeo(g);
     };
@@ -210,11 +213,11 @@ export default function OrbitSystem({ projects }: { projects: Project[] }) {
   const current = projects[focused];
 
   return (
-    <section id="projects" className="relative px-6 py-32">
+    <section className="relative px-6 pb-16 pt-28">
       <AdminEdit href="/projects/edit" />
       <div className="mx-auto max-w-7xl">
-        <SectionHeading index="03" eyebrow="Project system" title={<>Every project <span className="text-aurora">is a world.</span></>}>
-          Tap any planet to pull it out of orbit and into focus (or swipe through them). Tap the focused world to open its mission dossier.
+        <SectionHeading compact index="03" eyebrow="Project system" title={<>Every project <span className="text-aurora">is a world.</span></>}>
+          Tap a planet to pull it into focus, then tap it again to open its dossier.
         </SectionHeading>
 
         {n === 0 ? (
@@ -233,8 +236,7 @@ export default function OrbitSystem({ projects }: { projects: Project[] }) {
                   touchX.current = null;
                   if (Math.abs(dx) > 40) step(dx < 0 ? 1 : -1);
                 }}
-                className="relative isolate w-full select-none overflow-hidden rounded-[2rem] border border-line bg-[radial-gradient(ellipse_at_50%_40%,rgba(30,40,110,0.35),transparent_70%)]"
-                style={{ height: geo?.h ?? 720 }}
+                className="relative isolate h-[440px] w-full select-none overflow-hidden rounded-[2rem] min-[808px]:h-[clamp(520px,calc(100svh-16rem),760px)] border border-line bg-[radial-gradient(ellipse_at_50%_40%,rgba(30,40,110,0.35),transparent_70%)]"
                 role="group"
                 aria-label="Project solar system. Use the left and right arrow keys to move between planets."
               >

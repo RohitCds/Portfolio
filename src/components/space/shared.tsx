@@ -21,16 +21,18 @@ export function Reveal({ children, delay = 0, className = "" }: { children: Reac
   );
 }
 
-export function SectionHeading({ index, eyebrow, title, children }: { index: string; eyebrow: string; title: ReactNode; children?: ReactNode }) {
+type HeadingProps = { index: string; eyebrow: string; title: ReactNode; children?: ReactNode; compact?: boolean };
+
+export function SectionHeading({ index, eyebrow, title, children, compact = false }: HeadingProps) {
   return (
-    <Reveal className="mb-14 max-w-3xl">
+    <Reveal className={`${compact ? "mb-8" : "mb-14"} max-w-3xl`}>
       <p className="hud mb-4 flex items-center gap-3">
         <span className="text-mint">{index}</span>
         <span className="h-px w-10 bg-line" />
         {eyebrow}
       </p>
-      <h2 className="font-display text-4xl font-semibold leading-[1.05] tracking-tight text-star sm:text-6xl">{title}</h2>
-      {children && <p className="mt-5 max-w-xl text-base leading-relaxed text-haze sm:text-lg">{children}</p>}
+      <h2 className={`font-display font-semibold leading-[1.05] tracking-tight text-star ${compact ? "text-3xl sm:text-5xl" : "text-4xl sm:text-6xl"}`}>{title}</h2>
+      {children && <p className={`max-w-xl leading-relaxed text-haze ${compact ? "mt-3 text-sm sm:text-base" : "mt-5 text-base sm:text-lg"}`}>{children}</p>}
     </Reveal>
   );
 }

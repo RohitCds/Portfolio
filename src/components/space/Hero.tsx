@@ -1,16 +1,18 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
-import { HiOutlineMail, HiOutlineDownload, HiArrowDown } from "react-icons/hi";
+import { HiOutlineMail, HiOutlineDownload, HiArrowRight } from "react-icons/hi";
+import { PAGES } from "./Nav";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 export default function Hero() {
   return (
-    <section id="home" className="relative flex min-h-screen items-center overflow-hidden px-6 pb-16 pt-28">
-      <div className="mx-auto grid w-full max-w-6xl items-center gap-12 lg:grid-cols-[1.15fr_0.85fr]">
+    <section className="relative flex min-h-screen flex-col overflow-hidden px-6 pb-10 pt-28">
+      <div className="mx-auto my-auto grid w-full max-w-6xl items-center gap-12 lg:grid-cols-[1.15fr_0.85fr]">
         <div>
           <motion.p
             className="hud mb-6 flex items-center gap-2"
@@ -49,9 +51,9 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, ease, delay: 0.45 }}
           >
-            <a href="#projects" className="btn-primary">
-              Explore my system <HiArrowDown />
-            </a>
+            <Link href="/projects" className="btn-primary">
+              Explore my system <HiArrowRight />
+            </Link>
             <a href="/Rohit Shroff Resume.pdf" download="Rohit Shroff Resume.pdf" className="btn-ghost">
               <HiOutlineDownload /> Download résumé
             </a>
@@ -94,12 +96,26 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      <a href="#about" className="hud absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-3 sm:flex" aria-label="Scroll down">
-        Scroll to launch
-        <span className="relative h-10 w-px overflow-hidden bg-white/10">
-          <span className="absolute inset-x-0 top-0 h-1/2 animate-scroll-cue bg-mint" />
-        </span>
-      </a>
+      {/* Destinations: one card per page */}
+      <motion.nav
+        aria-label="Pages"
+        className="mx-auto mt-14 grid w-full max-w-6xl grid-cols-2 gap-3 md:grid-cols-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.9, ease, delay: 0.8 }}
+      >
+        {PAGES.map((p, i) => (
+          <Link key={p.href} href={p.href} className="glass group rounded-2xl px-5 py-4 transition hover:border-mint/40 hover:bg-white/[0.05]">
+            <span className="hud block !text-[10px]">
+              <span className="text-mint">{String(i + 1).padStart(2, "0")}</span> · {p.blurb}
+            </span>
+            <span className="mt-1 flex items-center justify-between font-display text-lg text-star">
+              {p.label}
+              <HiArrowRight className="text-haze transition group-hover:translate-x-1 group-hover:text-mint" />
+            </span>
+          </Link>
+        ))}
+      </motion.nav>
     </section>
   );
 }

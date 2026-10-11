@@ -32,7 +32,7 @@ export default function NewProjectPage() {
 
     if (res.ok) {
       toast.success("Project added successfully!");
-      router.push("/projects");
+      router.push("/projects/manage");
     } else {
       const data = await res.json();
       toast.error(data.error || "Failed to add project");
@@ -89,7 +89,7 @@ export default function NewProjectPage() {
           </button>
           <button
             type="button"
-            onClick={() => router.push("/projects")}
+            onClick={() => router.push("/projects/manage")}
             className="bg-gray-400 text-white px-6 rounded hover:bg-gray-500 transition"
           >
             Cancel

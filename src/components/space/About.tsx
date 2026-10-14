@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { AdminEdit, Reveal, SectionHeading } from "./shared";
+import AlienPet from "./AlienPet";
 
 type Props = { content: string; projectCount: number; skillCount: number; domainCount: number };
 
@@ -18,9 +19,11 @@ export default function About({ content, projectCount, skillCount, domainCount }
       <div className="mx-auto max-w-6xl">
         <SectionHeading index="01" eyebrow="Crew profile" title={<>The human behind <span className="text-aurora">the mission.</span></>} />
 
-        <div className="grid gap-10 lg:grid-cols-[340px_1fr]">
+        {/* extra top margin leaves room for Blip hovering above the ID card */}
+        <div className="mt-28 grid gap-10 lg:grid-cols-[340px_1fr]">
           {/* ID badge */}
-          <Reveal>
+          <Reveal className="relative">
+            <AlienPet className="absolute -top-[132px] right-3 z-10" />
             <div className="glass relative overflow-hidden rounded-3xl p-6">
               <div className="mb-5 flex items-center justify-between">
                 <span className="hud text-mint">Crew ID · RS-001</span>
@@ -37,6 +40,7 @@ export default function About({ content, projectCount, skillCount, domainCount }
                 <Row k="Role" v="AI Engineer" />
                 <Row k="Specialty" v="LLMs · Data · Full-stack" />
                 <Row k="Missions" v={String(projectCount).padStart(2, "0")} />
+                <Row k="Co-pilot" v="Blip (alien)" />
               </dl>
               {/* barcode flourish */}
               <div className="mt-6 flex h-8 gap-[3px] opacity-40">

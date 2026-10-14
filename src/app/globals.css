@@ -135,6 +135,92 @@ body {
   animation: loader-fade 0.35s ease-out 0.15s both;
 }
 
+/* ----- Alien pet (Blip) ----- */
+@keyframes bp-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes bp-antenna-l {
+  0%, 100% { transform: rotate(-6deg); }
+  50% { transform: rotate(8deg); }
+}
+@keyframes bp-antenna-r {
+  0%, 100% { transform: rotate(6deg); }
+  50% { transform: rotate(-8deg); }
+}
+@keyframes bp-light {
+  0%, 100% { opacity: 0.25; }
+  40% { opacity: 1; }
+}
+@keyframes bp-glow {
+  0%, 100% { opacity: 0.25; transform: scaleX(0.85); }
+  50% { opacity: 0.6; transform: scaleX(1); }
+}
+@keyframes bp-roll {
+  0% { transform: translateY(0) rotate(0); }
+  45% { transform: translateY(-22px) rotate(200deg); }
+  75% { transform: translateY(-6px) rotate(360deg); }
+  100% { transform: translateY(0) rotate(360deg); }
+}
+@keyframes bp-wave {
+  0%, 100% { transform: rotate(0); }
+  15%, 45%, 75% { transform: rotate(-112deg) scale(1.2); }
+  30%, 60% { transform: rotate(-70deg) scale(1.2); }
+  90% { transform: rotate(-30deg); }
+}
+@keyframes bp-juggle {
+  0% { transform: translate(42px, 104px); }
+  12% { transform: translate(44px, 30px); }
+  25% { transform: translate(80px, -10px); }
+  38% { transform: translate(116px, 30px); }
+  50% { transform: translate(118px, 104px); }
+  75% { transform: translate(80px, 112px); }
+  100% { transform: translate(42px, 104px); }
+}
+@keyframes bp-arm-l-toss {
+  0%, 100% { transform: rotate(0); }
+  50% { transform: rotate(24deg); }
+}
+@keyframes bp-arm-r-toss {
+  0%, 100% { transform: rotate(-24deg); }
+  50% { transform: rotate(0); }
+}
+@keyframes bp-beam {
+  0%, 100% { opacity: 0; }
+  12%, 70% { opacity: 1; }
+}
+@keyframes bp-star {
+  0%, 12% { transform: translate(80px, 204px) scale(1); opacity: 0; }
+  18% { opacity: 1; }
+  60% { transform: translate(80px, 126px) scale(0.7); opacity: 1; }
+  64%, 100% { transform: translate(80px, 120px) scale(0); opacity: 0; }
+}
+@keyframes bp-chomp {
+  0%, 62% { opacity: 0; }
+  66%, 72% { opacity: 1; }
+  76% { opacity: 0; }
+  80%, 85% { opacity: 1; }
+  89%, 100% { opacity: 0; }
+}
+.bp-bob { animation: bp-bob 3.2s ease-in-out infinite; }
+.bp-antenna-l { transform-origin: 68px 40px; animation: bp-antenna-l 2.6s ease-in-out infinite; }
+.bp-antenna-r { transform-origin: 92px 40px; animation: bp-antenna-r 2.6s ease-in-out infinite; }
+.bp-light { animation: bp-light 1.4s ease-in-out infinite; }
+.bp-glow { transform-box: fill-box; transform-origin: center; animation: bp-glow 3.2s ease-in-out infinite; }
+.bp-body { transform-origin: 80px 92px; }
+.bp-arm-l { transform-origin: 50px 96px; }
+.bp-arm-r { transform-origin: 110px 96px; }
+.bp-ball, .bp-beam, .bp-star, .bp-chomp, .bp-glasses { opacity: 0; transition: opacity 0.25s; }
+.bp-trick-roll .bp-body { animation: bp-roll 1.1s cubic-bezier(0.45, 0, 0.3, 1); }
+.bp-trick-wave .bp-arm-r { animation: bp-wave 1.8s ease-in-out; }
+.bp-trick-juggle .bp-ball { opacity: 1; animation: bp-juggle 1.2s linear infinite; }
+.bp-trick-juggle .bp-arm-l { animation: bp-arm-l-toss 0.4s ease-in-out infinite; }
+.bp-trick-juggle .bp-arm-r { animation: bp-arm-r-toss 0.4s ease-in-out infinite; }
+.bp-trick-beam .bp-beam { animation: bp-beam 2.4s ease-in-out forwards; }
+.bp-trick-beam .bp-star { animation: bp-star 2.4s ease-in-out forwards; }
+.bp-trick-beam .bp-chomp { animation: bp-chomp 2.4s linear forwards; }
+.bp-trick-read .bp-glasses { opacity: 1; }
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

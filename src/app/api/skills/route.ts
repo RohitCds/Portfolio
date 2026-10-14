@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/auth";
 import { PrismaClient } from "@/generated/prisma";
 
 const prisma = new PrismaClient();
@@ -13,6 +14,8 @@ export async function GET() {
 
 /* -------------------- POST: Add a new skill -------------------- */
 export async function POST(req: Request) {
+  const denied = await requireAdmin();
+  if (denied) return denied;
   const { name, category } = await req.json();
 
   if (!name || !category) {
@@ -32,6 +35,8 @@ export async function POST(req: Request) {
 
 /* -------------------- PUT: Update an existing skill -------------------- */
 export async function PUT(req: Request) {
+  const denied = await requireAdmin();
+  if (denied) return denied;
   const { id, name, category } = await req.json();
 
   if (!id) {
@@ -56,6 +61,8 @@ export async function PUT(req: Request) {
 
 /* -------------------- DELETE: Remove a skill by ID -------------------- */
 export async function DELETE(req: Request) {
+  const denied = await requireAdmin();
+  if (denied) return denied;
   const { id } = await req.json();
 
   if (!id) {

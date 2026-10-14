@@ -55,14 +55,14 @@ export default function NewProjectPage() {
           placeholder="Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="border border-gray-300 p-3 rounded text-gray-800"
+          className="border border-gray-300 bg-white p-3 rounded text-gray-800"
           required
         />
         <textarea
           placeholder="Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="border border-gray-300 p-3 rounded text-gray-800"
+          className="border border-gray-300 bg-white p-3 rounded text-gray-800"
           rows={4}
           required
         />
@@ -70,14 +70,14 @@ export default function NewProjectPage() {
           placeholder="Tech Stack (e.g., React, Node.js, MongoDB)"
           value={techStack}
           onChange={(e) => setTechStack(e.target.value)}
-          className="border border-gray-300 p-3 rounded text-gray-800"
+          className="border border-gray-300 bg-white p-3 rounded text-gray-800"
           required
         />
         <input
           placeholder="Project Link (GitHub, Live Demo, etc.)"
           value={link}
           onChange={(e) => setLink(e.target.value)}
-          className="border border-gray-300 p-3 rounded text-gray-800"
+          className="border border-gray-300 bg-white p-3 rounded text-gray-800"
           required
         />
         <div className="flex gap-3">

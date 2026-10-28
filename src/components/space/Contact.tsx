@@ -27,7 +27,7 @@ export default function Contact() {
       <div className="relative z-10 mx-auto max-w-4xl text-center">
         <Reveal>
           <p className="hud mb-5 flex items-center justify-center gap-3">
-            <span className="text-mint">04</span>
+            <span className="text-mint">05</span>
             <span className="h-px w-10 bg-line" />
             Open a channel
           </p>

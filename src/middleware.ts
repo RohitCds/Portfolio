@@ -4,5 +4,5 @@ import { withAuth } from "next-auth/middleware";
 export default withAuth({ pages: { signIn: "/admin-login-9271" } });
 
 export const config = {
-  matcher: ["/about/edit", "/skills/edit", "/projects/edit", "/projects/new", "/projects/manage"],
+  matcher: ["/about/edit", "/skills/edit", "/projects/edit", "/projects/new", "/projects/manage", "/logbook/edit", "/logbook/edit/:path*"],
 };

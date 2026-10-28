@@ -99,13 +99,13 @@ export default function Hero() {
       {/* Destinations: one card per page */}
       <motion.nav
         aria-label="Pages"
-        className="mx-auto mt-14 grid w-full max-w-6xl grid-cols-2 gap-3 md:grid-cols-4"
+        className="mx-auto mt-14 grid w-full max-w-6xl grid-cols-2 gap-3 md:grid-cols-5"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, ease, delay: 0.8 }}
       >
         {PAGES.map((p, i) => (
-          <Link key={p.href} href={p.href} className="glass group rounded-2xl px-5 py-4 transition hover:border-mint/40 hover:bg-white/[0.05]">
+          <Link key={p.href} href={p.href} className="glass group rounded-2xl px-5 py-4 transition last:col-span-2 hover:border-mint/40 hover:bg-white/[0.05] md:last:col-span-1">
             <span className="hud block !text-[10px]">
               <span className="text-mint">{String(i + 1).padStart(2, "0")}</span> · {p.blurb}
             </span>

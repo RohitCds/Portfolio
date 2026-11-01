@@ -36,9 +36,9 @@ export default function Logbook({ entries }: { entries: LogListItem[] }) {
                 <span className="absolute h-[2px] w-24 -rotate-[18deg] rounded-full bg-white/40" />
               </span>
               <p className="hud text-mint">{logNumber(1)} · in progress</p>
-              <h3 className="mt-3 font-display text-2xl font-semibold text-star">The first entry is being written.</h3>
-              <p className="mt-3 max-w-md text-haze">
-                Deep dives, research-paper notes and handwritten study pages will land here. Check back soon.
+              <h3 className="mt-3 font-display text-4xl font-semibold text-star sm:text-5xl">Coming soon.</h3>
+              <p className="mt-4 max-w-md text-haze">
+                The first entries are being written: deep dives, research-paper notes and handwritten study pages. Check back soon.
               </p>
             </div>
           </Reveal>

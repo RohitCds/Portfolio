@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { MotionValue, motion, useMotionValue, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { MotionValue, motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import { HiArrowLeft, HiArrowRight, HiOutlinePaperClip } from "react-icons/hi";
 import { AdminEdit } from "./shared";
 import { LOG_KINDS, LogEntryDTO, LogKind, formatLogDate, logNumber } from "@/lib/logbook";
@@ -96,8 +96,10 @@ function scene(p: number, vp: Viewport) {
       [hx - hw, hy + hh],
     ]);
   };
-  const beamPath = cone(0.7, 0.96);
-  const corePath = cone(0.25, 0.5);
+  // stacked translucent cones, softened by one blur on the whole layer (cheap for the GPU, unlike per-shape SVG filters)
+  const beamPath = cone(0.7, 0.95);
+  const beamMid = cone(0.45, 0.72);
+  const corePath = cone(0.22, 0.45);
 
   return {
     astro,
@@ -109,6 +111,7 @@ function scene(p: number, vp: Viewport) {
     glowW: half * 3.2,
     beam,
     beamPath,
+    beamMid,
     corePath,
     rise,
     holo: `translate(-50%, -50%) translate(${hx - L.cx}px, ${hy - L.cy}px) scale(${hs})`,
@@ -129,12 +132,14 @@ export default function Logbook({ entries }: { entries: LogListItem[] }) {
   const visible = entries.filter((e) => kind === "all" || e.kind === kind);
 
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end end"] });
+  // wheels and trackpads scroll in jumps; the camera glides after them instead of snapping
+  const glide = useSpring(scrollYProgress, { stiffness: 90, damping: 24, mass: 0.5, restDelta: 0.0002 });
   const vw = useMotionValue(1440);
   const vh = useMotionValue(900);
   const still = useMotionValue(reduced ? 1 : 0);
   useEffect(() => still.set(reduced ? 1 : 0), [reduced, still]);
 
-  const sc = useTransform([scrollYProgress, vw, vh, still], ([prog, w, h, r]: number[]) =>
+  const sc = useTransform([glide, vw, vh, still], ([prog, w, h, r]: number[]) =>
     scene(r ? 1 : clamp01(prog / 0.78), { w, h }),
   );
   const astroT = usePick(sc, "astro");
@@ -146,8 +151,14 @@ export default function Logbook({ entries }: { entries: LogListItem[] }) {
   const glowW = usePick(sc, "glowW");
   const beamO = usePick(sc, "beam");
   const beamD = usePick(sc, "beamPath");
+  const midD = usePick(sc, "beamMid");
   const coreD = usePick(sc, "corePath");
   const riseO = usePick(sc, "rise");
+  // skip drawing layers while they're fully transparent
+  const shown = (v: number) => (v > 0.001 ? "visible" : "hidden");
+  const beamShown = useTransform(beamO, shown);
+  const glowShown = useTransform(glowO, shown);
+  const riseShown = useTransform(riseO, shown);
   const holoT = usePick(sc, "holo");
   const [live, setLive] = useState(false); // holograms fully out: controls become interactive
   useEffect(() => riseO.on("change", (v) => setLive(v > 0.92)), [riseO]);
@@ -212,12 +223,12 @@ export default function Logbook({ entries }: { entries: LogListItem[] }) {
               alt=""
               aria-hidden
               className="absolute left-0 top-0 max-w-none select-none"
-              style={{ width: L.boxW, height: L.boxH, transform: starsT, transformOrigin: "0 0" }}
+              style={{ width: L.boxW, height: L.boxH, transform: starsT, transformOrigin: "0 0", willChange: "transform" }}
               draggable={false}
             />
             <motion.div
               className="pointer-events-none absolute left-0 top-0"
-              style={{ width: L.boxW, height: L.boxH, transform: astroT, transformOrigin: "0 0" }}
+              style={{ width: L.boxW, height: L.boxH, transform: astroT, transformOrigin: "0 0", willChange: "transform" }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -244,6 +255,7 @@ export default function Logbook({ entries }: { entries: LogListItem[] }) {
                 x: "-50%",
                 y: "-50%",
                 opacity: glowO,
+                visibility: glowShown,
                 background: "radial-gradient(closest-side, rgba(150,255,235,0.75), rgba(110,242,200,0.35) 40%, rgba(90,169,255,0) 100%)",
               }}
             />
@@ -251,10 +263,10 @@ export default function Logbook({ entries }: { entries: LogListItem[] }) {
             {/* projection beam */}
             <motion.svg
               aria-hidden
-              className="holo-beam pointer-events-none absolute inset-0 mix-blend-screen"
+              className="pointer-events-none absolute inset-0 mix-blend-screen"
               width={vp.w}
               height={vp.h}
-              style={{ opacity: beamO }}
+              style={{ opacity: beamO, visibility: beamShown, filter: "blur(9px)", willChange: "filter, opacity" }}
             >
               <defs>
                 <linearGradient id="beam-fill" x1="0" y1="1" x2="0" y2="0">
@@ -262,8 +274,9 @@ export default function Logbook({ entries }: { entries: LogListItem[] }) {
                   <stop offset="100%" stopColor="#6ef2c8" stopOpacity="0.04" />
                 </linearGradient>
               </defs>
-              <motion.path d={beamD} fill="url(#beam-fill)" style={{ filter: "blur(10px)" }} />
-              <motion.path d={coreD} fill="url(#beam-fill)" style={{ filter: "blur(4px)" }} />
+              <motion.path d={beamD} fill="url(#beam-fill)" opacity={0.4} />
+              <motion.path d={midD} fill="url(#beam-fill)" opacity={0.35} />
+              <motion.path d={coreD} fill="url(#beam-fill)" opacity={0.45} />
             </motion.svg>
 
             {/* intro (on narrow screens it sits over the suit, so it gets a dark backdrop) */}
@@ -294,7 +307,7 @@ export default function Logbook({ entries }: { entries: LogListItem[] }) {
             <motion.div
               ref={holoRef}
               className="absolute z-20"
-              style={{ left: L.cx, top: L.cy, width: L.cardW, height: L.cardH, transform: holoT, opacity: riseO, perspective: 1400 }}
+              style={{ left: L.cx, top: L.cy, width: L.cardW, height: L.cardH, transform: holoT, opacity: riseO, visibility: riseShown, perspective: 1400 }}
             >
               <motion.div
                 className="relative h-full w-full touch-pan-y"
@@ -386,7 +399,7 @@ function Hologram({ offset, width, onSelect, children }: { offset: number; width
       onClick={offset !== 0 ? onSelect : undefined}
       aria-hidden={offset !== 0}
     >
-      <div className={`holo-card h-full ${offset === 0 ? "holo-flicker" : "cursor-pointer"}`}>{children}</div>
+      <div className={`holo-card h-full ${offset === 0 ? "holo-flicker" : "cursor-pointer"} ${d > 1 ? "holo-far" : ""}`}>{children}</div>
     </motion.div>
   );
 }

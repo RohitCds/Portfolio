@@ -232,7 +232,7 @@ body {
     linear-gradient(180deg, rgba(110, 242, 200, 0.16), rgba(90, 169, 255, 0.06) 60%, rgba(110, 242, 200, 0.12)),
     rgba(2, 14, 20, 0.66);
   box-shadow: 0 0 34px rgba(110, 242, 200, 0.22), inset 0 0 44px rgba(110, 242, 200, 0.12);
-  backdrop-filter: blur(10px) saturate(1.2);
+  backdrop-filter: blur(8px) saturate(1.2);
   color: #dffcf3;
 }
 /* scanlines */
@@ -272,7 +272,8 @@ body {
 .holo-btn:hover:not(:disabled) { background: rgba(110, 242, 200, 0.18); box-shadow: 0 0 18px rgba(110, 242, 200, 0.35); }
 .holo-btn:disabled { opacity: 0.3; }
 .holo-flicker { animation: holo-flicker 6s infinite; }
-.holo-beam { animation: holo-beam 3.2s ease-in-out infinite; }
+/* cards further out are barely visible: skip the costly background blur */
+.holo-far { backdrop-filter: none; }
 
 @keyframes holo-sweep {
   from { transform: translateY(300%); }
@@ -284,10 +285,6 @@ body {
   92% { opacity: 1; }
   95% { opacity: 0.88; }
   96% { opacity: 1; }
-}
-@keyframes holo-beam {
-  0%, 100% { filter: brightness(1); }
-  50% { filter: brightness(1.35); }
 }
 
 @media (prefers-reduced-motion: reduce) {

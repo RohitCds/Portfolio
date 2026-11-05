@@ -221,6 +221,75 @@ body {
 .bp-trick-beam .bp-chomp { animation: bp-chomp 2.4s linear forwards; }
 .bp-trick-read .bp-glasses { opacity: 1; }
 
+/* ----- Logbook holograms ----- */
+.holo-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid rgba(110, 242, 200, 0.45);
+  /* tinted glass: see-through enough to feel projected, dark enough to read over a white suit */
+  background:
+    linear-gradient(180deg, rgba(110, 242, 200, 0.16), rgba(90, 169, 255, 0.06) 60%, rgba(110, 242, 200, 0.12)),
+    rgba(2, 14, 20, 0.66);
+  box-shadow: 0 0 34px rgba(110, 242, 200, 0.22), inset 0 0 44px rgba(110, 242, 200, 0.12);
+  backdrop-filter: blur(10px) saturate(1.2);
+  color: #dffcf3;
+}
+/* scanlines */
+.holo-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(190, 255, 240, 0.06) 0 1px, transparent 1px 4px);
+}
+/* a slow bright band sweeping upward */
+.holo-card::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 35%;
+  pointer-events: none;
+  background: linear-gradient(0deg, transparent, rgba(150, 255, 235, 0.12), transparent);
+  animation: holo-sweep 5.5s linear infinite;
+}
+.holo-text {
+  color: #effffa;
+  text-shadow: 0 0 14px rgba(110, 242, 200, 0.55);
+}
+.holo-btn {
+  display: grid;
+  place-items: center;
+  height: 2.25rem;
+  width: 2.25rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(110, 242, 200, 0.4);
+  background: rgba(110, 242, 200, 0.08);
+  color: #6ef2c8;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.holo-btn:hover:not(:disabled) { background: rgba(110, 242, 200, 0.18); box-shadow: 0 0 18px rgba(110, 242, 200, 0.35); }
+.holo-btn:disabled { opacity: 0.3; }
+.holo-flicker { animation: holo-flicker 6s infinite; }
+.holo-beam { animation: holo-beam 3.2s ease-in-out infinite; }
+
+@keyframes holo-sweep {
+  from { transform: translateY(300%); }
+  to { transform: translateY(-120%); }
+}
+@keyframes holo-flicker {
+  0%, 90%, 100% { opacity: 1; }
+  91% { opacity: 0.78; }
+  92% { opacity: 1; }
+  95% { opacity: 0.88; }
+  96% { opacity: 1; }
+}
+@keyframes holo-beam {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.35); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

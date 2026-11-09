@@ -75,6 +75,7 @@ model LogEntry {
   sourceTitle String?
   sourceUrl   String?
   attachments Json      @default("[]") // [{ url, name, type, size }]
+  lab         String? // interactive lab shown beside the post: a key in src/lib/labs.ts
   published   Boolean   @default(false)
   publishedAt DateTime?
   createdAt   DateTime  @default(now())

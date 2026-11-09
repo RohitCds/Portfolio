@@ -27,6 +27,7 @@ export type LogEntryDTO = {
   sourceTitle: string | null;
   sourceUrl: string | null;
   attachments: Attachment[];
+  lab: string | null;
   published: boolean;
   publishedAt: string | null;
   createdAt: string;
@@ -90,6 +91,7 @@ export function toLogEntryDTO(row: {
   sourceTitle: string | null;
   sourceUrl: string | null;
   attachments: unknown;
+  lab: string | null;
   published: boolean;
   publishedAt: Date | null;
   createdAt: Date;

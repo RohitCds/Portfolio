@@ -11,6 +11,7 @@ import {
 } from "react-icons/hi";
 import Markdown from "@/components/space/Markdown";
 import { Attachment, LOG_KINDS, LogEntryDTO, LogKind, attachmentType, logNumber, slugify } from "@/lib/logbook";
+import { LABS, labFor, splitLabMarkers } from "@/lib/labs";
 
 type Form = {
   title: string;
@@ -22,11 +23,12 @@ type Form = {
   sourceUrl: string;
   body: string;
   attachments: Attachment[];
+  lab: string;
   published: boolean;
 };
 
 const EMPTY: Form = {
-  title: "", slug: "", kind: "deep-dive", tags: "", summary: "", sourceTitle: "", sourceUrl: "", body: "", attachments: [], published: false,
+  title: "", slug: "", kind: "deep-dive", tags: "", summary: "", sourceTitle: "", sourceUrl: "", body: "", attachments: [], lab: "", published: false,
 };
 
 const field =
@@ -61,7 +63,7 @@ export default function LogEntryEditor({ params }: { params: Promise<{ id: strin
       .then((e: LogEntryDTO) => {
         setForm({
           title: e.title, slug: e.slug, kind: e.kind, tags: e.tags.join(", "), summary: e.summary,
-          sourceTitle: e.sourceTitle ?? "", sourceUrl: e.sourceUrl ?? "", body: e.body, attachments: e.attachments, published: e.published,
+          sourceTitle: e.sourceTitle ?? "", sourceUrl: e.sourceUrl ?? "", body: e.body, attachments: e.attachments, lab: e.lab ?? "", published: e.published,
         });
         setMeta({ id: e.id, number: e.number, slug: e.slug, published: e.published });
       })
@@ -242,7 +244,7 @@ export default function LogEntryEditor({ params }: { params: Promise<{ id: strin
               />
             </label>
           </div>
-          <div className="grid gap-4 md:grid-cols-[1fr_1fr]">
+          <div className="grid gap-4 md:grid-cols-3">
             <label className="space-y-1">
               <span className="hud !text-[10px]">Source (paper, course, book): optional</span>
               <input value={form.sourceTitle} onChange={(e) => set("sourceTitle", e.target.value)} placeholder="Attention Is All You Need (Vaswani et al., 2017)" className={field} />
@@ -250,6 +252,15 @@ export default function LogEntryEditor({ params }: { params: Promise<{ id: strin
             <label className="space-y-1">
               <span className="hud !text-[10px]">Source link</span>
               <input value={form.sourceUrl} onChange={(e) => set("sourceUrl", e.target.value)} placeholder="https://arxiv.org/abs/1706.03762" className={field} />
+            </label>
+            <label className="space-y-1">
+              <span className="hud !text-[10px]">Lab beside the post: optional</span>
+              <select value={form.lab} onChange={(e) => set("lab", e.target.value)} className={field}>
+                <option value="" className="bg-deep">None</option>
+                {Object.entries(LABS).map(([key, l]) => (
+                  <option key={key} value={key} className="bg-deep">{l.title}</option>
+                ))}
+              </select>
             </label>
           </div>
         </section>
@@ -324,6 +335,20 @@ export default function LogEntryEditor({ params }: { params: Promise<{ id: strin
                 {label as string}
               </button>
             ))}
+            {labFor(form.lab) && (
+              // a marker on its own line switches the lab to that frame as the reader scrolls past it
+              <select
+                value=""
+                onChange={(e) => e.target.value && insert(`\n{lab:${e.target.value}}\n`)}
+                className="rounded-lg bg-transparent px-2 py-1 font-mono text-xs text-mint outline-none hover:bg-white/10"
+                aria-label="Insert a lab marker"
+              >
+                <option value="" className="bg-deep">+ Lab marker</option>
+                {labFor(form.lab)!.frames.map((f) => (
+                  <option key={f.id} value={f.id} className="bg-deep">{f.title}</option>
+                ))}
+              </select>
+            )}
             <div className="ml-auto flex rounded-full border border-line p-0.5 lg:hidden">
               {(["write", "preview"] as const).map((v) => (
                 <button key={v} onClick={() => setView(v)} className={`rounded-full px-3 py-1 text-xs capitalize ${view === v ? "bg-mint text-void" : "text-haze"}`}>{v}</button>
@@ -340,11 +365,31 @@ export default function LogEntryEditor({ params }: { params: Promise<{ id: strin
               aria-label="Body (Markdown)"
             />
             <div className={`max-h-[80vh] overflow-y-auto p-6 lg:block ${view === "preview" ? "block" : "hidden"}`}>
-              {form.body.trim() ? <Markdown>{form.body}</Markdown> : <p className="hud">Preview appears here</p>}
+              {form.body.trim() ? <BodyPreview body={form.body} labKey={form.lab} /> : <p className="hud">Preview appears here</p>}
             </div>
           </div>
         </section>
       </div>
+    </div>
+  );
+}
+
+// Lab markers show as small hints in the preview, so the text reads as it will on the site
+function BodyPreview({ body, labKey }: { body: string; labKey: string }) {
+  const lab = labFor(labKey);
+  return (
+    <div className="space-y-5">
+      {splitLabMarkers(body).map((chunk, i) => (
+        <div key={i}>
+          {chunk.frame && (
+            <p className={`hud mb-3 flex items-center gap-2 !text-[10px] ${lab?.frames.some((f) => f.id === chunk.frame) ? "text-mint" : "text-amber-300"}`}>
+              <span className="h-px w-6 bg-current" />
+              Lab: {lab?.frames.find((f) => f.id === chunk.frame)?.title ?? `unknown marker "${chunk.frame}"${lab ? "" : " (no lab chosen)"}`}
+            </p>
+          )}
+          {chunk.markdown.trim() && <Markdown>{chunk.markdown}</Markdown>}
+        </div>
+      ))}
     </div>
   );
 }

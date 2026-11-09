@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { Attachment, LOG_KINDS, RESERVED_SLUGS, isHttpUrl, slugify } from "@/lib/logbook";
+import { LABS } from "@/lib/labs";
 
 type EntryInput = {
   title: string;
@@ -10,6 +11,7 @@ type EntryInput = {
   sourceTitle: string | null;
   sourceUrl: string | null;
   attachments: Attachment[];
+  lab: string | null;
   published: boolean;
   slug: string;
 };
@@ -27,11 +29,13 @@ export function parseEntryInput(raw: unknown): { data: EntryInput } | { error: s
   const body = typeof b.body === "string" ? b.body.slice(0, 200_000) : "";
   const sourceTitle = str(b.sourceTitle, 200) || null;
   const sourceUrl = str(b.sourceUrl, 500) || null;
+  const lab = str(b.lab, 40) || null;
 
   if (!title) return { error: "Title is required" };
   if (!summary) return { error: "Summary is required" };
   if (!(kind in LOG_KINDS)) return { error: "Unknown entry type" };
   if (sourceUrl && !isHttpUrl(sourceUrl)) return { error: "Source link must be an http(s) URL" };
+  if (lab && !(lab in LABS)) return { error: "Unknown lab" };
 
   const rawTags = Array.isArray(b.tags) ? b.tags : typeof b.tags === "string" ? b.tags.split(",") : [];
   const tags = [...new Set(rawTags.map((t) => str(t, 30)).filter(Boolean))].slice(0, 8);
@@ -55,7 +59,7 @@ export function parseEntryInput(raw: unknown): { data: EntryInput } | { error: s
   if (RESERVED_SLUGS.has(slug)) return { error: `"${slug}" is reserved; pick another slug` };
 
   return {
-    data: { title, summary, kind, tags, body, sourceTitle, sourceUrl, attachments, published: b.published === true, slug },
+    data: { title, summary, kind, tags, body, sourceTitle, sourceUrl, attachments, lab, published: b.published === true, slug },
   };
 }
 
